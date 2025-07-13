@@ -5,6 +5,7 @@ import ast
 import copy as cp
 import math
 from datetime import date 
+day_coeff = []
 latitude = int(input("latitude?="))
 longitude = int(input("longitude?="))
 starting_date = str(input("input the starting day,month and year in this format : [D,M,Y]"))
@@ -49,7 +50,7 @@ def Daylight(lat,date):
         return 24
     else :
         return 0
-print(Daylight(latitude,starting_date))
+
 
 cycle_d = [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28],[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30],[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30],[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30],[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30],[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]]
 if year%4 == 0 :
@@ -141,9 +142,11 @@ def CCF(date):
     for i in range(dimension[0]):
         av = av + CCF_time[i]
     CCF_day = av/dimension[0]
-    return CCF_day
+    day_coeff.append(dimension[2])
+    print(dimension[2])
+    return CCF_day*(dimension[2])
 while temp_date != ending_date:
-    print(temp_date,ending_date)
+    
     if start == 0 :
         start = 1
         C = CCF(temp_date)
@@ -151,21 +154,21 @@ while temp_date != ending_date:
             pass
         else :
             CCF_period.append(C)
-    else :
-        day += 1
-        if day > len(cycle_d[month-1]) :
-            day = 1
-            month += 1
-            if month > 12 :
-                month = 1
-                year += 1
-                if year%4 == 0 :
-                    if 29 in cycle_d[1] :
-                        pass
-                    else :
-                        cycle_d[1].append(29)
+    
+    day += 1
+    if day > len(cycle_d[month-1]) :
+        day = 1
+        month += 1
+        if month > 12 :
+            month = 1
+            year += 1
+            if year%4 == 0 :
+                if 29 in cycle_d[1] :
+                    pass
                 else :
-                    cycle_d[1].remove(29)
+                    cycle_d[1].append(29)
+            else :
+                cycle_d[1].remove(29)
     temp_date = [day, month,year]
     if start == 1 :
         C = CCF(temp_date)
@@ -173,12 +176,12 @@ while temp_date != ending_date:
             pass
         else :
             CCF_period.append(C)
-CCF_period.remove(CCF_period[0])
+
 #calculates the finals cloud cover factor (CCF)
 print(CCF_period)
 for i in range(0,len(CCF_period)):
     CCF_final += CCF_period[i]
-CCF_final = CCF_final/len(CCF_period)
+CCF_final = CCF_final/sum(day_coeff)
 print("The CCF of a latitude of",latitude,"and longitude of",longitude,"between",starting_date,"and",ending_date,"is equal to",CCF_final*100,"%")
     
     
